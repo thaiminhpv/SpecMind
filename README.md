@@ -1,1 +1,17 @@
-# SpecMind
+# SpecMind: Cognitively Inspired, Interactive Multi-Turn Framework for Postcondition Inference
+
+This repository contains the replication package for the paper.
+
+---
+
+## 📂 Resources
+
+Source code and data are available at the following link:
+
+- [https://anonymous.4open.science/r/SpecMind](https://anonymous.4open.science/r/SpecMind)
+
+---
+
+## Abstract
+
+Specifications are vital for ensuring program correctness, yet writing them manually remains challenging and time-intensive. Recent large language model (LLM)-based methods have shown successes in generating specifications such as postconditions, but existing single-pass prompting often yields inaccurate results. In this paper, we present SpecMind, a novel framework for postcondition generation that treats LLMs as interactive and exploratory reasoners rather than one-shot generators. SpecMind employs feedback-driven multi-turn prompting approaches, enabling the model to iteratively refine candidate postconditions by incorporating implicit and explicit correctness feedback, while autonomously deciding when to stop. This process fosters deeper code comprehension and improves alignment with true program behavior via exploratory attempts. Our empirical evaluation shows that SpecMind significantly outperforms state-of-the-art approaches in both the accuracy and completeness of generated postconditions, as well as in automated bug detection.
