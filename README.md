@@ -37,6 +37,11 @@ Specifications are vital for ensuring program correctness, yet writing them manu
 
 Follow the setup instructions in `specmind/evalplus/README.md` and `specmind/fixeval/README.md`
 
+```bash
+conda create -n specmind-evalplus python=3.12 -y
+conda activate specmind-evalplus
+```
+
 ### 2. Run
 
 Run the following scripts to run the experiments:
