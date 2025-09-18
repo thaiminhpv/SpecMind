@@ -532,19 +532,20 @@ def generate_and_test_postcondition(
                 completeness_threshold is not None
                 and power_results["completeness_score"] * 100 < completeness_threshold
             ):
-                # observation = ("The postconditions are sound but not complete. While the current assertions pass for the correct "
-                #     "implementation, they lack the comprehensiveness to catch potential bugs in other flawed implementations. A truly "
-                #     "robust set of postconditions should be exhaustive enough to detect all incorrect behaviors.")
+                if feedback_buggy_mutant:
+                    observation = f"""\
+Current postconditions cannot distinguish the original implementation from the following buggy mutant:
+{power_results['buggy_mutant_to_fix']}
+Please refine your postconditions so they can detect the bug in this mutant and all other possible bugs.\
+"""
+                else:
+                    observation = ("The postconditions are sound but not complete. While the current assertions pass for the correct "
+                        "implementation, they lack the comprehensiveness to catch potential bugs in other flawed implementations. A truly "
+                        "robust set of postconditions should be exhaustive enough to detect all incorrect behaviors.")
 
-                observation = f"""\
-                Current postconditions cannot distinguish the original implementation from the following buggy mutant:
-                {power_results['buggy_mutant_to_fix']}
-                Please refine your postconditions so they can detect the bug in this mutant and all other possible bugs.
-                """
-                if mode == "multiturn":
-                    conversation_history.append(
-                        {"role": "user", "content": f"<observation>\n{observation}\n</observation>"}
-                    )
+                conversation_history.append(
+                    {"role": "user", "content": f"<observation>\n{observation}\n</observation>"}
+                )
             else:
                 print("✅ Postconditions passed all tests and meet completeness requirements!")
                 return cleaned_postcondition, result, True, conversation_history, raw_responses, completeness_trend
