@@ -2,6 +2,7 @@ import argparse
 import ast
 import json
 import os
+import random
 import re
 import zipfile
 from collections import Counter, defaultdict
@@ -695,11 +696,18 @@ def evaluate_postcondition_power_single(
             # Add buggy mutant feedback only when user passes --feedback-buggy-mutant
             buggy_mutant_to_fix = None
             if feedback_buggy_mutant:
+                # Find all buggy mutants that were not killed
+                surviving_mutants = []
                 for i in range(len(wrapped_codes)):
                     if result_data['test_results'][i][0] != "killed at least one mutant":
-                        buggy_mutant_to_fix = wrapped_codes[i]['solution']
-                        print(wrapped_codes[i]['wrapped'])
-                        break
+                        surviving_mutants.append((i, wrapped_codes[i]))
+                
+                # Randomly sample one surviving mutant
+                if surviving_mutants:
+                    selected_idx, selected_mutant = random.choice(surviving_mutants)
+                    buggy_mutant_to_fix = selected_mutant['solution']
+                    print(f"Selected buggy mutant {selected_idx + 1} out of {len(surviving_mutants)} surviving mutants:")
+                    print(selected_mutant['wrapped'])
 
             completeness_score = num_tests_killed / num_tests_run if num_tests_run > 0 else 0.0
             return {
