@@ -406,12 +406,14 @@ def generate_and_test_postcondition(
     run_power_eval: bool = True,
     mode: Literal["multiturn", "retry", "singlepass"] = "multiturn",
     completeness_threshold: Optional[float] = None,
+    feedback_buggy_mutant: bool = False,
 ) -> Tuple[
     Optional[str],
     Optional[Dict[str, Any]],
     bool,
     List[Dict[str, str]],
     List[str],
+    List[Tuple[float, int]],
 ]:
     """
     Generates and iteratively tests a postcondition using a conversational approach.
@@ -507,7 +509,8 @@ def generate_and_test_postcondition(
             if run_power_eval:
                 print("🔍 Calculating completeness (power evaluation)...")
                 power_results = evaluate_postcondition_power_single(
-                    problem, cleaned_postcondition, problem["entry_point"]
+                    problem, cleaned_postcondition, problem["entry_point"], 
+                    feedback_buggy_mutant=feedback_buggy_mutant
                 )
                 print(f"Completeness score: {power_results['completeness_score']:.3f}")
                 print(f"Tests killed: {power_results['num_bopi_killed']}/{power_results['num_bopi_run']}")
@@ -529,9 +532,15 @@ def generate_and_test_postcondition(
                 completeness_threshold is not None
                 and power_results["completeness_score"] * 100 < completeness_threshold
             ):
-                observation = ("The postconditions are sound but not complete. While the current assertions pass for the correct "
-                    "implementation, they lack the comprehensiveness to catch potential bugs in other flawed implementations. A truly "
-                    "robust set of postconditions should be exhaustive enough to detect all incorrect behaviors.")
+                # observation = ("The postconditions are sound but not complete. While the current assertions pass for the correct "
+                #     "implementation, they lack the comprehensiveness to catch potential bugs in other flawed implementations. A truly "
+                #     "robust set of postconditions should be exhaustive enough to detect all incorrect behaviors.")
+
+                observation = f"""\
+                Current postconditions cannot distinguish the original implementation from the following buggy mutant:
+                {power_results['buggy_mutant_to_fix']}
+                Please refine your postconditions so they can detect the bug in this mutant and all other possible bugs.
+                """
                 if mode == "multiturn":
                     conversation_history.append(
                         {"role": "user", "content": f"<observation>\n{observation}\n</observation>"}
@@ -585,6 +594,7 @@ def evaluate_postcondition_power_single(
     n_workers: int = 1,
     min_time_limit: float = 0.1,
     gt_time_limit_factor: float = 2.0,
+    feedback_buggy_mutant: bool = False,
 ) -> Dict[str, Any]:
     """
     Evaluates the "completeness" or "power" of a postcondition against buggy code mutants.
@@ -605,6 +615,7 @@ def evaluate_postcondition_power_single(
     if not os.path.exists(buggy_codes_file):
         print(f"Warning: Buggy codes file {buggy_codes_file} not found. Skipping power evaluation.")
         return {
+            "buggy_mutant_to_fix": None,
             "num_bopi_run": 0, "num_bopi_killed": 0, "num_codes_run": 0,
             "num_codes_killed": 0, "completeness_score": 0.0,
         }
@@ -623,6 +634,7 @@ def evaluate_postcondition_power_single(
     if not buggy_codes:
         print(f"No buggy codes found for task {problem['task_id']}")
         return {
+            "buggy_mutant_to_fix": None,
             "num_bopi_run": 0, "num_bopi_killed": 0, "num_codes_run": 0,
             "num_codes_killed": 0, "completeness_score": 0.0,
         }
@@ -632,6 +644,7 @@ def evaluate_postcondition_power_single(
     if not sanitized_postcondition:
         print("Postcondition could not be sanitized.")
         return {
+            "buggy_mutant_to_fix": None,
             "num_bopi_run": 0, "num_bopi_killed": 0, "num_codes_run": 0,
             "num_codes_killed": 0, "completeness_score": 0.0,
         }
@@ -677,9 +690,19 @@ def evaluate_postcondition_power_single(
             num_codes_killed = len(
                 [x for x in result_data["test_results"] if x[0] == "killed at least one mutant"]
             )
+            
+            # Add buggy mutant feedback only when user passes --feedback-buggy-mutant
+            buggy_mutant_to_fix = None
+            if feedback_buggy_mutant:
+                for i in range(len(wrapped_codes)):
+                    if result_data['test_results'][i][0] != "killed at least one mutant":
+                        buggy_mutant_to_fix = wrapped_codes[i]['solution']
+                        print(wrapped_codes[i]['wrapped'])
+                        break
 
             completeness_score = num_tests_killed / num_tests_run if num_tests_run > 0 else 0.0
             return {
+                "buggy_mutant_to_fix": buggy_mutant_to_fix,
                 "num_bopi_run": num_tests_run,
                 "num_bopi_killed": num_tests_killed,
                 "num_codes_run": num_codes_run,
@@ -688,12 +711,14 @@ def evaluate_postcondition_power_single(
             }
         else:
             return {
+                "buggy_mutant_to_fix": None,
                 "num_bopi_run": 0, "num_bopi_killed": 0, "num_codes_run": 0,
                 "num_codes_killed": 0, "completeness_score": 0.0,
             }
     except Exception as e:
         print(f"Error in power evaluation: {str(e)}")
         return {
+            "buggy_mutant_to_fix": None,
             "num_bopi_run": 0, "num_bopi_killed": 0, "num_codes_run": 0,
             "num_codes_killed": 0, "completeness_score": 0.0,
         }
@@ -714,6 +739,8 @@ def main():
                         help="Force LLM to continue generating assertions if the completeness does not exceed the threshold.")
     parser.add_argument('--mode', type=str, choices=['multiturn', 'retry', 'singlepass'], 
                         help='The experiment mode')
+    parser.add_argument("--feedback-buggy-mutant", action="store_true",
+                        help="Provide feedback with buggy mutant code when completeness threshold is not met.")
 
     args = parser.parse_args()
 
@@ -747,6 +774,7 @@ def main():
         run_power_eval=not args.no_power_eval,
         mode=args.mode,
         completeness_threshold=args.completeness_threshold,
+        feedback_buggy_mutant=args.feedback_buggy_mutant,
     )
 
     # Compile and save the final results
