@@ -15,3 +15,38 @@ Source code and data are available at the following link:
 ## Abstract
 
 Specifications are vital for ensuring program correctness, yet writing them manually remains challenging and time-intensive. Recent large language model (LLM)-based methods have shown successes in generating specifications such as postconditions, but existing single-pass prompting often yields inaccurate results. In this paper, we present SpecMind, a novel framework for postcondition generation that treats LLMs as interactive and exploratory reasoners rather than one-shot generators. SpecMind employs feedback-driven multi-turn prompting approaches, enabling the model to iteratively refine candidate postconditions by incorporating implicit and explicit correctness feedback, while autonomously deciding when to stop. This process fosters deeper code comprehension and improves alignment with true program behavior via exploratory attempts. Our empirical evaluation shows that SpecMind significantly outperforms state-of-the-art approaches in both the accuracy and completeness of generated postconditions, as well as in automated bug detection.
+
+
+## Project Structure
+
+```
+.
+├── experiments
+│   ├── README.md
+├── README.md
+└── specmind
+    ├── evalplus
+    │   ├── README.md
+    ├── fixeval
+    │   ├── README.md
+```
+
+## How to run SpecMind
+
+### 1. Setup
+
+Follow the setup instructions in `specmind/evalplus/README.md` and `specmind/fixeval/README.md`
+
+### 2. Run
+
+Run the following scripts to run the experiments:
+
+```bash
+bash ./experiments/greedy.sh
+bash ./experiments/exploratory.sh
+bash ./experiments/single-pass.sh
+```
+
+### 3. Bug Detection
+
+Follow the this [guide](./experiments/bug_detection_fixeval.md) to run the bug detection experiments:
