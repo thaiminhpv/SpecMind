@@ -42,7 +42,7 @@ conda create -n specmind-evalplus python=3.12 -y
 conda activate specmind-evalplus
 ```
 
-### 2. Run
+### 2. Run on EvalPlus
 
 Run the following scripts to run the experiments:
 
@@ -52,6 +52,12 @@ bash ./experiments/exploratory.sh
 bash ./experiments/single-pass.sh
 ```
 
-### 3. Bug Detection
+### 3. Bug Detection on FixEval
 
-Follow the this [guide](./experiments/bug_detection_fixeval.md) to run the bug detection experiments:
+See [`specmind/fixeval/README.md`](/specmind/fixeval/README.md) for the setup instructions.
+
+Then run the following script to run the experiments:
+
+```bash
+bash ./specmind/fixeval/bug_detection_fixeval.sh
+```
