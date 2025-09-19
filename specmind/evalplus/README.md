@@ -27,3 +27,13 @@ git apply -v ../evalplus-specmind-fork.diff
 pip install -e .
 cd ..
 ```
+
+## Run
+
+Run the following scripts to run the experiments:
+
+```bash
+bash ./experiments/greedy.sh
+bash ./experiments/exploratory.sh
+bash ./experiments/single-pass.sh
+```
