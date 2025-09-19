@@ -14,5 +14,5 @@ git checkout d5397c599c2252cd7ff4ffd4f48d82852fb20ecd
 git apply -v ../evalplus-specmind-fork.diff
 cd ..
 
-mv evalplus lib/
+mv evalplus lib/evalplus
 pip install -e lib/evalplus
