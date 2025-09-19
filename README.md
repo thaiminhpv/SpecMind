@@ -33,7 +33,7 @@ Specifications are vital for ensuring program correctness, yet writing them manu
 
 ## How to run SpecMind
 
-### 1. Setup
+### 1. Run on EvalPlus
 
 Follow the setup instructions in `specmind/evalplus/README.md` and `specmind/fixeval/README.md`
 
@@ -42,9 +42,7 @@ conda create -n specmind-evalplus python=3.12 -y
 conda activate specmind-evalplus
 ```
 
-### 2. Run on EvalPlus
-
-Run the following scripts to run the experiments:
+Then run the following scripts to run the experiments:
 
 ```bash
 bash ./experiments/greedy.sh
@@ -52,7 +50,7 @@ bash ./experiments/exploratory.sh
 bash ./experiments/single-pass.sh
 ```
 
-### 3. Bug Detection on FixEval
+### 2. Bug Detection on FixEval
 
 See [`specmind/fixeval/README.md`](/specmind/fixeval/README.md) for the setup instructions.
 
