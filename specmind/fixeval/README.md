@@ -12,11 +12,11 @@ cd FixEval_official
 then install the dependencies as described in FixEval_official/README.md, into environment `fixeval`.
 Then install additional dependencies into environment `fixeval` by running `./install.sh`.
 
-Environment `fixeval-run` is used to run the code.
+Environment `fixeval-runner` is used to run the code.
 
 ```bash
-conda create -n fixeval-run python=3.12 -y
-conda activate fixeval-run
+conda create -n fixeval-runner python=3.6 -y
+conda activate fixeval-runner
 ```
 
 ## 2. Run
