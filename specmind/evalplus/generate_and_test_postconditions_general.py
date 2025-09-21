@@ -13,8 +13,6 @@ from typing import Any, Dict, List, Optional, Tuple, Literal
 import openai
 from evalplus.data import get_human_eval_plus, get_human_eval_plus_hash
 from evalplus.eval import SUCCESS, untrusted_check
-from langsmith import traceable
-from langsmith.wrappers import wrap_openai
 from tqdm import tqdm
 
 from run_postcondition_evaluation import (

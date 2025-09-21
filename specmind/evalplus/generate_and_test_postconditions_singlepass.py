@@ -9,8 +9,6 @@ from typing import Dict, Any, List, Tuple, Optional
 from evalplus.data import get_human_eval_plus, get_human_eval_plus_hash
 from evalplus.eval import SUCCESS, untrusted_check
 from run_postcondition_evaluation import get_groundtruth, evaluate_post_condition_power
-from langsmith import traceable
-from langsmith.wrappers import wrap_openai
 from pathlib import Path
 from response_preprocessing import code_sanitize, wrap_code_solution
 
