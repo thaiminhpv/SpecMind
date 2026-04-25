@@ -5,15 +5,6 @@ conda create -n specmind-evalplus python=3.12 -y
 conda activate specmind-evalplus
 ```
 
-then follows the setup instructions in [nlpostcond paper for evalplus](https://github.com/microsoft/nl-2-postcond/tree/main/nl2postcondition-fse2024)
-
-<!-- https://github.com/microsoft/nl-2-postcond/tree/main/nl2postcondition-fse2024/nl2postcondition_source_evalplus -->
-
-```bash
-git clone https://github.com/microsoft/nl-2-postcond.git
-mv nl-2-postcond/nl2postcondition-fse2024/nl2postcondition_source_evalplus/* .
-pip install -r requirements.txt
-```
 
 ## Install EvalPlus library adapted for SpecMind
 
@@ -26,6 +17,17 @@ git checkout d5397c599c2252cd7ff4ffd4f48d82852fb20ecd
 git apply -v ../evalplus-specmind-fork.diff
 pip install -e .
 cd ..
+```
+
+
+then follows the setup instructions in [nlpostcond paper for evalplus](https://github.com/microsoft/nl-2-postcond/tree/main/nl2postcondition-fse2024)
+
+<!-- https://github.com/microsoft/nl-2-postcond/tree/main/nl2postcondition-fse2024/nl2postcondition_source_evalplus -->
+
+```bash
+git clone https://github.com/microsoft/nl-2-postcond.git
+mv nl-2-postcond/nl2postcondition-fse2024/nl2postcondition_source_evalplus/* .
+pip install -r requirements.txt
 ```
 
 ## Run

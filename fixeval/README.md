@@ -18,3 +18,11 @@ Environment `fixeval-runner` is used to run the code.
 conda create -n fixeval-runner python=3.6 -y
 conda activate fixeval-runner
 ```
+
+## Run
+
+Run the following scripts to run the experiments:
+
+```bash
+bash bug_detection_fixeval.sh
+```
