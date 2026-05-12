@@ -1,7 +1,7 @@
 <div align="center">
   
 # [ACL'26] SpecMind: Cognitively Inspired, Interactive Multi-Turn Framework for Postcondition Inference  
-[![arXiv](https://img.shields.io/badge/arXiv-2410.23402-b31b1b.svg)](https://arxiv.org/abs/2602.20610)  
+[![arXiv](https://img.shields.io/badge/arXiv-2602.20610-b31b1b.svg)](https://arxiv.org/abs/2602.20610)  
 
 </div>
 
